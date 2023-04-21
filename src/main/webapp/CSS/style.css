@@ -8,6 +8,11 @@ table{
     border-collapse: collapse;
     width : 100%;
 }
+td {
+    font-family: Arial, sans-serif;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 8px;
+}
 .standard{
     background-color : #31D3A5;
     color : white;

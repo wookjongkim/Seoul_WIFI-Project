@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -23,7 +24,7 @@
         LAT : <input id = 'LAT', type = "text", value="0.0">
         LNT : <input id = 'LNT', type = "text", value="0.0">
         <button id = 'getLocationBtn'>내 위치 가져오기</button>
-        <button>근처 WIFI 정보 보기</button>
+        <button id = 'getWifiInfoBtn'>근처 WIFI 정보 보기</button>
     </p>
     <table id = "wifiInfoTable">
         <tr>
@@ -46,7 +47,7 @@
             <th class="standard">작업일자</th>
         </tr>
         <tr>
-            <td colspan = "17" class = default_comment>위치 정보를 입력한 후에 조회해주세요</td>
+            <td colspan="17" class="default_comment">위치 정보를 입력한 후에 조회해주세요</td>
         </tr>
     </table>
 </body>
