@@ -4,7 +4,7 @@
 <head>
     <title>위치 히스토리 목록</title>
     <link rel = "stylesheet" href = "CSS/style.css">
-    <script src = "js/main.js"></script>
+    <script src = "JS/main.js"></script>
 </head>
 <body>
     <h1>위치 히스토리 목록</h1>

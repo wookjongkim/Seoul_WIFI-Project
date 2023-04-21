@@ -4,7 +4,7 @@
 <head>
     <title>와이파이 정보 구하기</title>
     <link rel = "stylesheet" href = "CSS/style.css">
-    <script src = "js/main.js"></script>
+    <script src = "JS/main.js"></script>
 </head>
 <body>
     <h1>와이파이 정보 구하기</h1>
@@ -13,16 +13,16 @@
         <span>|</span>
         <a href = "history.jsp">위치 히스토리 목록</a>
         <span>|</span>
-        <a href = "load-wifi.jsp">Open API 와이파이 정보 가져오기</a>
+        <a href = "/load-wifi-data">Open API 와이파이 정보 가져오기</a>
         <span>|</span>
         <a href = "">즐겨 찾기 보기</a>
         <span>|</span>
         <a href = "">즐겨 찾기 그룹 관리</a>
     </p>
     <p>
-        LAT : <input type = "text", value="0.0">
-        LNT : <input type = "text", value="0.0">
-        <button>내 위치 가져오기</button>
+        LAT : <input id = 'LAT', type = "text", value="0.0">
+        LNT : <input id = 'LNT', type = "text", value="0.0">
+        <button id = 'getLocationBtn'>내 위치 가져오기</button>
         <button>근처 WIFI 정보 보기</button>
     </p>
     <table id = "wifiInfoTable">
