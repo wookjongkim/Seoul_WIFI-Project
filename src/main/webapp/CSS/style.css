@@ -1,0 +1,17 @@
+.default_comment{
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+table{
+    border-collapse: collapse;
+    width : 100%;
+}
+.standard{
+    background-color : #31D3A5;
+    color : white;
+    padding : 8px;
+    border: 1px solid white;
+    text-align:center;
+}
