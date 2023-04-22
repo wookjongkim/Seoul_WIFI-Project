@@ -116,4 +116,59 @@ public class SelectTool {
         }
         return historyList;
     }
+    public WifiInfo getWifiDetail(String manageNum){
+
+            Connection connection = null;
+            PreparedStatement preparedStatement = null;
+            ResultSet resultSet = null;
+            WifiInfo wifiInfo = null;
+
+            try{
+                Class.forName(className);
+                connection = DriverManager.getConnection(url);
+                String sql = "SELECT * FROM WifiInfo WHERE manageNum = ?";
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, manageNum);
+
+                resultSet = preparedStatement.executeQuery();
+
+                if(resultSet.next()){
+                    wifiInfo = new WifiInfo();
+                    wifiInfo.setDistanceKm(resultSet.getDouble("distanceKm"));
+                    wifiInfo.setManageNum(resultSet.getString("manageNum"));
+                    wifiInfo.setDistrict(resultSet.getString("district"));
+                    wifiInfo.setWifiName(resultSet.getString("wifiName"));
+                    wifiInfo.setRoadAddress(resultSet.getString("roadAddress"));
+                    wifiInfo.setDetailAddress(resultSet.getString("detailAddress"));
+                    wifiInfo.setInstallationFloor((resultSet.getString("installationFloor")));
+                    wifiInfo.setInstallationType(resultSet.getString("installationType"));
+                    wifiInfo.setInstallationAgency(resultSet.getString("installationAgency"));
+                    wifiInfo.setServiceType(resultSet.getString("serviceType"));
+                    wifiInfo.setNetworkType(resultSet.getString("networkType"));
+                    wifiInfo.setInstallationYear(resultSet.getString("installationYear"));
+                    wifiInfo.setIndoorOutdoor(resultSet.getString("indoorOutdoor"));
+                    wifiInfo.setWifiConnectionEnvironment(resultSet.getString("wifiConnectionEnvironment"));
+                    wifiInfo.setXCoordinate(resultSet.getDouble("xCoordinate"));
+                    wifiInfo.setYCoordinate(resultSet.getDouble("yCoordinate"));
+                    wifiInfo.setOperationDate(resultSet.getString("operationDate"));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }finally {
+                try {
+                    if (resultSet != null) {
+                        resultSet.close();
+                    }
+                    if (preparedStatement != null) {
+                        preparedStatement.close();
+                    }
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            return wifiInfo;
+        }
 }
