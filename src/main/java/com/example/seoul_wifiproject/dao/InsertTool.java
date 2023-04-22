@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,5 +87,34 @@ public class InsertTool {
                 e.printStackTrace();
             }
         }
+    }
+    public int insertBookmarkToDB(String bookmarkName, int groupOrder){
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        int affected = 0;
+
+        try{
+            Class.forName(className);
+            connection = DriverManager.getConnection(url);
+
+            String sql = "INSERT INTO bookmark_group (bookmark_name, groupOrder, register_date) VALUES(?,?,?)";
+            System.out.println("SQL Query: " + sql); // 추가된 부분
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1,bookmarkName);
+            preparedStatement.setInt(2,groupOrder);
+            preparedStatement.setString(3, LocalDateTime.now().toString());
+
+            affected = preparedStatement.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try{
+                if(preparedStatement != null) preparedStatement.close();
+                if(connection != null) connection.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return affected;
     }
 }

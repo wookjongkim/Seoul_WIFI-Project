@@ -163,6 +163,129 @@ function displayWifiDetails(wifiDetails){
         }
     }
 }
+function navigateAddBookMark(){
+    window.location.href = 'bookmark-group-add.jsp';
+}
+
+function submitForm(){
+    const bookmarkName = document.getElementById("bookmark_name").value;
+    const groupOrder = document.getElementById("groupOrder").value;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/add-bookmark-group", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4 && xhr.status === 200){
+            alert(xhr.responseText);
+            window.location.href = "/bookmark-group.jsp";
+        }
+    };
+    xhr.send("bookmark_name=" + encodeURIComponent(bookmarkName) + "&group_order=" + encodeURIComponent(groupOrder));
+}
+function displayBookmark(){
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "getBookmark", true);
+    xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4 && xhr.status === 200){
+            const bookmarkList = JSON.parse(xhr.responseText);
+            const table = document.getElementById("wifiBookmarkTable");
+
+            for(let i = table.rows.length-1; i > 0; i--){
+                table.deleteRow(i);
+            }
+
+            if(bookmarkList.length > 0){
+                for(let i = 0; i < bookmarkList.length; i++){
+                    let row = table.insertRow(i+1);
+
+                    let rowData = [
+                        bookmarkList[i].id, bookmarkList[i].bookmark_name,
+                        bookmarkList[i].groupOrder, bookmarkList[i].register_date,
+                        (bookmarkList[i].modified_date === undefined ? '' : bookmarkList[i].modified_date),
+                        "<a href = 'bookmark-group-edit.jsp?id="+bookmarkList[i].id+"'>수정</a>  |  "
+                        + "<a href = 'bookmark-group-delete.jsp?id="+bookmarkList[i].id+"'>삭제</a>"
+                    ];
+
+                    for(let j = 0; j < rowData.length; j++){
+                        let cell = row.insertCell(j);
+                        cell.innerHTML = rowData[j];
+                    }
+                }
+            }
+
+            let defaultRow = table.querySelector(".default_comment_row");
+            if(bookmarkList.length === 0 && !defaultRow){
+                let row = table.insertRow(1);
+                row.classList.add("default_comment_row");
+
+                let cell = row.insertCell(0);
+                cell.colSpan = 6;
+                cell.classList.add("default_comment");
+                cell.innerHTML = "북마크 그룹 추가 후 조회해주세요";
+            }else if(bookmarkList.length >0 && defaultRow){
+                table.deleteRow(defaultRow.rowIndex);
+            }
+        }
+    };
+    xhr.send();
+}
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+function fillDefault() {
+    const id = getParameterByName('id');
+    if (id) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `/getBookmarkById?id=${id}`, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const bookmark = JSON.parse(xhr.responseText);
+                document.querySelector('input[type="TEXT"]').value = bookmark.bookmark_name;
+                document.querySelector('input[type="number"]').value = bookmark.groupOrder;
+            }
+        };
+        xhr.send();
+    }
+}
+function updateBookmark() {
+    const bookmarkNameInput = document.querySelector('input[type="TEXT"]');
+    const groupOrderInput = document.querySelector('input[type="number"]');
+    const id = new URL(window.location.href).searchParams.get("id");
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "updateBookmark", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            alert(xhr.responseText);
+            window.location.href = "/bookmark-group.jsp";
+        }
+    };
+    xhr.send(`id=${id}&bookmark_name=${encodeURIComponent(bookmarkNameInput.value)}&group_order=${groupOrderInput.value}`);
+}
+function deleteBookmark(){
+    const id = new URL(window.location.href).searchParams.get("id");
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "deleteBookmark", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4 && xhr.status === 200){
+            alert(xhr.responseText);
+            window.location.href = "/bookmark-group.jsp";
+        }
+    };
+    xhr.send(`id=${id}`);
+}
+
 
 
 

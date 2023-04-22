@@ -1,5 +1,6 @@
 package com.example.seoul_wifiproject.dao;
 
+import com.example.seoul_wifiproject.dto.Bookmark;
 import com.example.seoul_wifiproject.dto.History;
 import com.example.seoul_wifiproject.dto.WifiInfo;
 import com.google.gson.Gson;
@@ -117,58 +118,153 @@ public class SelectTool {
         return historyList;
     }
     public WifiInfo getWifiDetail(String manageNum){
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        WifiInfo wifiInfo = null;
 
-            Connection connection = null;
-            PreparedStatement preparedStatement = null;
-            ResultSet resultSet = null;
-            WifiInfo wifiInfo = null;
+        try{
+            Class.forName(className);
+            connection = DriverManager.getConnection(url);
+            String sql = "SELECT * FROM WifiInfo WHERE manageNum = ?";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, manageNum);
 
-            try{
-                Class.forName(className);
-                connection = DriverManager.getConnection(url);
-                String sql = "SELECT * FROM WifiInfo WHERE manageNum = ?";
-                preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, manageNum);
+            resultSet = preparedStatement.executeQuery();
 
-                resultSet = preparedStatement.executeQuery();
-
-                if(resultSet.next()){
-                    wifiInfo = new WifiInfo();
-                    wifiInfo.setDistanceKm(resultSet.getDouble("distanceKm"));
-                    wifiInfo.setManageNum(resultSet.getString("manageNum"));
-                    wifiInfo.setDistrict(resultSet.getString("district"));
-                    wifiInfo.setWifiName(resultSet.getString("wifiName"));
-                    wifiInfo.setRoadAddress(resultSet.getString("roadAddress"));
-                    wifiInfo.setDetailAddress(resultSet.getString("detailAddress"));
-                    wifiInfo.setInstallationFloor((resultSet.getString("installationFloor")));
-                    wifiInfo.setInstallationType(resultSet.getString("installationType"));
-                    wifiInfo.setInstallationAgency(resultSet.getString("installationAgency"));
-                    wifiInfo.setServiceType(resultSet.getString("serviceType"));
-                    wifiInfo.setNetworkType(resultSet.getString("networkType"));
-                    wifiInfo.setInstallationYear(resultSet.getString("installationYear"));
-                    wifiInfo.setIndoorOutdoor(resultSet.getString("indoorOutdoor"));
-                    wifiInfo.setWifiConnectionEnvironment(resultSet.getString("wifiConnectionEnvironment"));
-                    wifiInfo.setXCoordinate(resultSet.getDouble("xCoordinate"));
-                    wifiInfo.setYCoordinate(resultSet.getDouble("yCoordinate"));
-                    wifiInfo.setOperationDate(resultSet.getString("operationDate"));
+            if(resultSet.next()){
+                wifiInfo = new WifiInfo();
+                wifiInfo.setDistanceKm(resultSet.getDouble("distanceKm"));
+                wifiInfo.setManageNum(resultSet.getString("manageNum"));
+                wifiInfo.setDistrict(resultSet.getString("district"));
+                wifiInfo.setWifiName(resultSet.getString("wifiName"));
+                wifiInfo.setRoadAddress(resultSet.getString("roadAddress"));
+                wifiInfo.setDetailAddress(resultSet.getString("detailAddress"));
+                wifiInfo.setInstallationFloor((resultSet.getString("installationFloor")));
+                wifiInfo.setInstallationType(resultSet.getString("installationType"));
+                wifiInfo.setInstallationAgency(resultSet.getString("installationAgency"));
+                wifiInfo.setServiceType(resultSet.getString("serviceType"));
+                wifiInfo.setNetworkType(resultSet.getString("networkType"));
+                wifiInfo.setInstallationYear(resultSet.getString("installationYear"));
+                wifiInfo.setIndoorOutdoor(resultSet.getString("indoorOutdoor"));
+                wifiInfo.setWifiConnectionEnvironment(resultSet.getString("wifiConnectionEnvironment"));
+                wifiInfo.setXCoordinate(resultSet.getDouble("xCoordinate"));
+                wifiInfo.setYCoordinate(resultSet.getDouble("yCoordinate"));
+                wifiInfo.setOperationDate(resultSet.getString("operationDate"));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
                 }
-            }catch (Exception e){
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
                 e.printStackTrace();
-            }finally {
+            }
+        }
+        return wifiInfo;
+    }
+    public List<Bookmark> getBookmarkGroups(){
+        List<Bookmark> bookmarkList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try{
+            Class.forName(className);
+            conn = DriverManager.getConnection(url);
+            pstmt = conn.prepareStatement("SELECT * from bookmark_group ORDER BY groupOrder ASC");
+            rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                Bookmark bookmark = new Bookmark();
+                bookmark.setId(rs.getInt("id"));
+                bookmark.setBookmark_name(rs.getString("bookmark_name"));
+                bookmark.setGroupOrder(rs.getInt("groupOrder"));
+                bookmark.setRegister_date(rs.getString("register_date"));
+                bookmark.setModified_date(rs.getString("modified_date"));
+                bookmarkList.add(bookmark);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally{
+            if (rs != null) {
                 try {
-                    if (resultSet != null) {
-                        resultSet.close();
-                    }
-                    if (preparedStatement != null) {
-                        preparedStatement.close();
-                    }
-                    if (connection != null) {
-                        connection.close();
-                    }
+                    rs.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-            return wifiInfo;
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        return bookmarkList;
+    }
+    public Bookmark getBookmarkById(int id) {
+        Bookmark bookmark = null;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            Class.forName(className);
+            conn = DriverManager.getConnection(url);
+            pstmt = conn.prepareStatement("SELECT * from bookmark_group WHERE id = ?");
+            pstmt.setInt(1, id);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                bookmark = new Bookmark();
+                bookmark.setId(rs.getInt("id"));
+                bookmark.setBookmark_name(rs.getString("bookmark_name"));
+                bookmark.setGroupOrder(rs.getInt("groupOrder"));
+                bookmark.setRegister_date(rs.getString("register_date"));
+                bookmark.setModified_date(rs.getString("modified_date"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return bookmark;
+    }
 }

@@ -18,7 +18,7 @@
         <span>|</span>
         <a href = "">즐겨 찾기 보기</a>
         <span>|</span>
-        <a href = "">즐겨 찾기 그룹 관리</a>
+        <a href = "bookmark-group.jsp">즐겨 찾기 그룹 관리</a>
     </p>
     <p>
         LAT : <input id = 'LAT', type = "text", value="0.0">
