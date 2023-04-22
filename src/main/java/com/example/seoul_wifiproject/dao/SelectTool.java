@@ -1,6 +1,7 @@
 package com.example.seoul_wifiproject.dao;
 
 import com.example.seoul_wifiproject.dto.Bookmark;
+import com.example.seoul_wifiproject.dto.Favorite;
 import com.example.seoul_wifiproject.dto.History;
 import com.example.seoul_wifiproject.dto.WifiInfo;
 import com.google.gson.Gson;
@@ -266,5 +267,117 @@ public class SelectTool {
             }
         }
         return bookmark;
+    }
+
+    public List<String> getBookmarkNames() {
+        List<String> bookmarkNames = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try{
+            Class.forName(className);
+            conn = DriverManager.getConnection(url);
+            pstmt = conn.prepareStatement("SELECT bookmark_name FROM bookmark_group");
+            rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                String bookmarkName = rs.getString("bookmark_name");
+                bookmarkNames.add(bookmarkName);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return bookmarkNames;
+    }
+    public String getWifiNameByManageNum(String manageNum){
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+        ResultSet resultSet = null;
+        String wifiName = null;
+
+        try{
+            Class.forName(className);
+            connection = DriverManager.getConnection(url);
+
+            String sql = "SELECT wifiName FROM WifiInfo WHERE manageNum=?";
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, manageNum);
+
+            resultSet = pstmt.executeQuery();
+            if(resultSet.next()){
+                wifiName = resultSet.getString("wifiName");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return wifiName;
+    }
+
+    public List<Favorite> getFavorites() {
+        List<Favorite> favoriteList = new ArrayList<>();
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+        ResultSet resultSet = null;
+        String wifiName = null;
+
+        try{
+            Class.forName(className);
+            connection = DriverManager.getConnection(url);
+
+            String sql = "SELECT * FROM favorite";
+            pstmt = connection.prepareStatement(sql);
+
+            resultSet = pstmt.executeQuery();
+            while(resultSet.next()){
+                Favorite favorite = new Favorite();
+                favorite.setId(resultSet.getInt("id"));
+                favorite.setBookmark_name(resultSet.getString("bookmark_name"));
+                favorite.setWifiName(resultSet.getString("wifiName"));
+                favorite.setRegister_date(resultSet.getString("register_date"));
+                favoriteList.add(favorite);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            try {
+                if (resultSet != null) resultSet.close();
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return favoriteList;
     }
 }

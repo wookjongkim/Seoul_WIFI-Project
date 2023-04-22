@@ -15,9 +15,9 @@
         <span>|</span>
         <a href = 'load-wifi.jsp'>Open API 와이파이 정보 가져오기</a>
         <span>|</span>
-        <a href = ''>북마크 보기</a>
+        <a href = 'bookmark-list.jsp'>북마크 보기</a>
         <span>|</span>
-        <a href = ''>북마크 그룹 관리</a>
+        <a href = 'bookmark-group.jsp'>북마크 그룹 관리</a>
     </p>
     <table id = "wifiHistoryTable">
       <tr>

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="CSS/style.css">
     <script src = "JS/main.js"></script>
 </head>
-<body>
+<body onload = "loadBookmarkNames()">
         <h1>와이파이 정보 구하기</h1>
         <a href="index.jsp">홈</a>
         <span>|</span>
@@ -14,16 +14,16 @@
         <span>|</span>
         <a href="load-wifi.jsp">와이파이 정보 가져오기</a>
         <span>|</span>
-        <a href = '#'>북마크 보기</a>
+        <a href = 'bookmark-list.jsp'>즐겨 찾기 보기</a>
         <span>|</span>
-        <a href = '#'> 북마크 그룹 관리</a>
+        <a href = 'bookmark-group.jsp'>즐겨 찾기 그룹 관리</a>
         <span>|</span>
 
         <p>
             <select>
                 <option>북마크 그룹 이름 선택</option>
             </select>
-            <button>북마크 추가하기</button>
+            <button onclick="addFavorite()">북마크 추가하기</button>
         </p>
 
         <table id = "wifiDetailTable">

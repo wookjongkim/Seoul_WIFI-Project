@@ -117,4 +117,33 @@ public class InsertTool {
         }
         return affected;
     }
+
+    public int insertFavoriteToDB(String bookmarkName, String wifiName) {
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+        int affected = 0;
+
+        try{
+            Class.forName(className);
+            connection = DriverManager.getConnection(url);
+
+            String sql = "INSERT INTO favorite(bookmark_name, wifiName, register_date) VALUES (?,?,?)";
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, bookmarkName);
+            pstmt.setString(2,wifiName);
+            pstmt.setString(3,LocalDateTime.now().toString());
+
+            affected = pstmt.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            try{
+                if(pstmt != null) pstmt.close();
+                if(connection != null) connection.close();
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return affected;
+    }
 }

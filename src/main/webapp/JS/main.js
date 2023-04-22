@@ -285,7 +285,114 @@ function deleteBookmark(){
     };
     xhr.send(`id=${id}`);
 }
+function loadBookmarkNames(){
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === XMLHttpRequest.DONE){
+            if(xhr.status === 200){
+                const bookmarkNames = JSON.parse(xhr.responseText);
+                const selectElement = document.querySelector("select");
 
+                bookmarkNames.forEach((bookmarkName) => {
+                    const option = document.createElement("option");
+                    option.textContent = bookmarkName;
+                    option.value = bookmarkName;
+                    selectElement.appendChild(option);
+                });
+            }
+        }
+    };
+    xhr.open("GET", "/getBookmarkNameList", true);
+    xhr.send();
+}
+function addFavorite(){
+    const bookmarkGroup = document.querySelector("select");
+    const bookmarkName = bookmarkGroup.value;
+    const manageNum = new URL(window.location.href).searchParams.get("manageNum");
+
+    if (!bookmarkName || bookmarkName === "북마크 그룹 이름 선택") {
+        alert("북마크 그룹을 선택해주세요.");
+        return;
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === XMLHttpRequest.DONE){
+            if(xhr.status == 200){
+                alert("북마크 정보를 추가하였습니다.");
+                window.location.href = "/bookmark-list.jsp";
+            }else{
+                alert("북마크 정보 추가 에러");
+            }
+        }
+    };
+    xhr.open("POST", "/addFavorite", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`bookmarkName=${bookmarkName}&manageNum=${manageNum}`);
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+    fetchFavorites();
+})
+
+function fetchFavorites(){
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                displayFavorites(JSON.parse(xhr.responseText));
+            } else {
+                alert("즐겨찾기 정보를 가져오는데 실패했습니다.");
+            }
+        }
+    };
+    xhr.open("GET", "/getFavorites", true);
+    xhr.send();
+}
+
+function displayFavorites(favorites) {
+    const table = document.getElementById("wifiFavoriteTable");
+    const defaultCommentRow = table.querySelector(".default_comment").parentElement;
+
+    if (favorites.length === 0) {
+        defaultCommentRow.style.display = "table-row";
+    } else {
+        defaultCommentRow.style.display = "none";
+
+        for (const favorite of favorites) {
+            const row = table.insertRow(-1);
+            row.insertCell(0).innerText = favorite.id;
+            row.insertCell(1).innerText = favorite.bookmark_name;
+            row.insertCell(2).innerText = favorite.wifiName;
+            row.insertCell(3).innerText = favorite.register_date;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.innerText = "삭제";
+            deleteButton.addEventListener("click", function() {
+                if(confirm("정말로 이 북마크를 삭제하시겠습니까?")){
+                    deleteFavorite(favorite.id, row); // 삭제 기능 호출
+                }
+            });
+            row.insertCell(4).appendChild(deleteButton);
+        }
+    }
+}
+
+function deleteFavorite(favoriteId, row) {
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                row.remove(); // 삭제 성공 시, 해당 행을 삭제합니다.
+            } else {
+                alert("즐겨찾기 삭제에 실패했습니다.");
+            }
+        }
+    };
+    xhr.open("POST", "/deleteFavorite", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`favoriteId=${favoriteId}`);
+}
 
 
 

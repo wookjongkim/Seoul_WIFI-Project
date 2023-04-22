@@ -59,4 +59,31 @@ public class DeleteTool {
         }
         return affected;
     }
+    public int deleteFavoriteById(String favoriteId) {
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+        int affected = 0;
+
+        try {
+            Class.forName(className);
+            connection = DriverManager.getConnection(url);
+
+            String sql = "DELETE FROM favorite WHERE id=?";
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, favoriteId);
+
+            affected = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return affected;
+    }
+
 }
