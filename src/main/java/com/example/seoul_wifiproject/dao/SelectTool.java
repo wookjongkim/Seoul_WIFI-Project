@@ -1,6 +1,8 @@
 package com.example.seoul_wifiproject.dao;
 
+import com.example.seoul_wifiproject.dto.History;
 import com.example.seoul_wifiproject.dto.WifiInfo;
+import com.google.gson.Gson;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -67,5 +69,51 @@ public class SelectTool {
             e.printStackTrace();
         }
         return nearbyWifiList;
+    }
+    public List<History> getHistory(){
+        List<History> historyList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try{
+            Class.forName(className);
+            conn = DriverManager.getConnection(url);
+            pstmt = conn.prepareStatement("SELECT * from history");
+            rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                History history = new History();
+                history.setId(rs.getInt("id"));
+                history.setXCoordinate(rs.getDouble("xCoordinate"));
+                history.setYCoordinate(rs.getDouble("yCoordinate"));
+                history.setInquiryDate(rs.getString("InquiryDate"));
+                historyList.add(history);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return historyList;
     }
 }

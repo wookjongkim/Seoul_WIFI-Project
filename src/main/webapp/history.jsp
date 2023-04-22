@@ -6,7 +6,7 @@
     <link rel = "stylesheet" href = "CSS/style.css">
     <script src = "JS/main.js"></script>
 </head>
-<body>
+<body onload="displayHistory()">
     <h1>위치 히스토리 목록</h1>
     <p>
         <a href = 'index.jsp'>홈</a>
@@ -19,7 +19,7 @@
         <span>|</span>
         <a href = ''>북마크 그룹 관리</a>
     </p>
-    <table>
+    <table id = "wifiHistoryTable">
       <tr>
         <th class = "standard">ID</th>
         <th class = "standard">X좌표</th>

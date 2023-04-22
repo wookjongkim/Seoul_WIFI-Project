@@ -69,4 +69,22 @@ public class InsertTool {
             }
         }
     }
+    public void insertHistoryToDB(String xCoordinate, String yCoordinate){
+        if(xCoordinate != null && yCoordinate != null){
+            try{
+                Class.forName(className);
+                Connection conn = DriverManager.getConnection(url);
+                PreparedStatement pstmt = conn.prepareStatement(
+                        "INSERT INTO history(xCoordinate, yCoordinate, InquiryDate)"
+                        + " VALUES(?,?,datetime('now'))");
+                pstmt.setDouble(1, Double.parseDouble(xCoordinate));
+                pstmt.setDouble(2, Double.parseDouble(yCoordinate));
+                pstmt.executeUpdate();
+                pstmt.close();
+                conn.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 }
